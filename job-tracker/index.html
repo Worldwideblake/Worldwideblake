@@ -1,0 +1,421 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blake's Job Tracker</title>
+<style>
+  :root {
+    color-scheme: light;
+    --page:        #f9f9f7;
+    --surface:     #fcfcfb;
+    --ink:         #0b0b0b;
+    --ink-2:       #52514e;
+    --muted:       #898781;
+    --hairline:    #e1e0d9;
+    --border:      rgba(11,11,11,0.10);
+    --accent:      #2a78d6;
+    --accent-ink:  #ffffff;
+    --st-notapplied-bg: #f0efec; --st-notapplied-fg: #52514e;
+    --st-saved-bg:      #cde2fb; --st-saved-fg:      #104281;
+    --st-applied-bg:    #dcf1e8; --st-applied-fg:    #0d5c40;
+    --st-interview-bg:  #fdeecb; --st-interview-fg:  #7a5200;
+    --st-offer-bg:      #d9f0d9; --st-offer-fg:      #006300;
+    --st-rejected-bg:   #fadddd; --st-rejected-fg:   #8f2323;
+    --st-closed-bg:     #f0efec; --st-closed-fg:     #898781;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --page:        #0d0d0d;
+      --surface:     #1a1a19;
+      --ink:         #ffffff;
+      --ink-2:       #c3c2b7;
+      --muted:       #898781;
+      --hairline:    #2c2c2a;
+      --border:      rgba(255,255,255,0.10);
+      --accent:      #3987e5;
+      --accent-ink:  #ffffff;
+      --st-notapplied-bg: #383835; --st-notapplied-fg: #c3c2b7;
+      --st-saved-bg:      #16324f; --st-saved-fg:      #9ec5f4;
+      --st-applied-bg:    #123a2c; --st-applied-fg:    #7fd4b0;
+      --st-interview-bg:  #4a3a10; --st-interview-fg:  #fad27e;
+      --st-offer-bg:      #143d14; --st-offer-fg:      #7fd47f;
+      --st-rejected-bg:   #4a1d1d; --st-rejected-fg:   #f0a2a2;
+      --st-closed-bg:     #2c2c2a; --st-closed-fg:     #898781;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --page:        #0d0d0d;
+    --surface:     #1a1a19;
+    --ink:         #ffffff;
+    --ink-2:       #c3c2b7;
+    --muted:       #898781;
+    --hairline:    #2c2c2a;
+    --border:      rgba(255,255,255,0.10);
+    --accent:      #3987e5;
+    --accent-ink:  #ffffff;
+    --st-notapplied-bg: #383835; --st-notapplied-fg: #c3c2b7;
+    --st-saved-bg:      #16324f; --st-saved-fg:      #9ec5f4;
+    --st-applied-bg:    #123a2c; --st-applied-fg:    #7fd4b0;
+    --st-interview-bg:  #4a3a10; --st-interview-fg:  #fad27e;
+    --st-offer-bg:      #143d14; --st-offer-fg:      #7fd47f;
+    --st-rejected-bg:   #4a1d1d; --st-rejected-fg:   #f0a2a2;
+    --st-closed-bg:     #2c2c2a; --st-closed-fg:     #898781;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--page);
+    color: var(--ink);
+    font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 24px 20px 80px; }
+
+  header h1 { font-size: 26px; margin: 0 0 2px; }
+  header p  { margin: 0; color: var(--ink-2); }
+  .header-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; }
+  .header-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 20px 0; }
+  .tile {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    padding: 12px 14px; cursor: pointer; text-align: left; font: inherit; color: inherit;
+  }
+  .tile .num { font-size: 28px; font-weight: 700; line-height: 1.1; }
+  .tile .lbl { color: var(--ink-2); font-size: 13px; margin-top: 2px; display: flex; align-items: center; gap: 6px; }
+  .tile .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  .tile.active { outline: 2px solid var(--accent); outline-offset: -1px; }
+
+  .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; align-items: center; }
+  .filters input[type="search"], .filters select {
+    background: var(--surface); color: var(--ink); border: 1px solid var(--border);
+    border-radius: 8px; padding: 7px 10px; font: inherit;
+  }
+  .filters input[type="search"] { flex: 1 1 220px; min-width: 180px; }
+
+  button.btn {
+    background: var(--surface); color: var(--ink); border: 1px solid var(--border);
+    border-radius: 8px; padding: 7px 12px; font: inherit; cursor: pointer;
+  }
+  button.btn:hover { border-color: var(--accent); }
+  button.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: transparent; }
+
+  .table-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; min-width: 900px; }
+  th {
+    text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: .04em;
+    color: var(--muted); font-weight: 600; padding: 10px 12px; border-bottom: 1px solid var(--hairline);
+    cursor: pointer; user-select: none; white-space: nowrap;
+  }
+  th .arrow { font-size: 10px; }
+  td { padding: 9px 12px; border-bottom: 1px solid var(--hairline); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  td .company { font-weight: 600; }
+  td .role { color: var(--ink-2); font-size: 13.5px; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .badge {
+    display: inline-block; font-size: 12px; font-weight: 600; border-radius: 999px;
+    padding: 2px 9px; white-space: nowrap;
+  }
+  select.status {
+    font: inherit; font-size: 13px; font-weight: 600; border-radius: 999px;
+    padding: 3px 8px; border: 1px solid transparent; cursor: pointer;
+  }
+  input.date, input.notes {
+    background: transparent; color: var(--ink); border: 1px solid transparent;
+    border-radius: 6px; padding: 3px 6px; font: inherit; font-size: 13.5px; width: 100%;
+  }
+  input.date { width: 130px; }
+  input.date:hover, input.notes:hover { border-color: var(--border); }
+  input.date:focus, input.notes:focus { border-color: var(--accent); outline: none; background: var(--page); }
+  .del { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 15px; padding: 2px 6px; border-radius: 6px; }
+  .del:hover { color: var(--st-rejected-fg); background: var(--st-rejected-bg); }
+
+  .empty { padding: 32px; text-align: center; color: var(--muted); }
+
+  dialog {
+    background: var(--surface); color: var(--ink); border: 1px solid var(--border);
+    border-radius: 12px; padding: 22px; max-width: 460px; width: calc(100vw - 40px);
+  }
+  dialog::backdrop { background: rgba(0,0,0,.45); }
+  dialog h2 { margin: 0 0 14px; font-size: 18px; }
+  dialog label { display: block; font-size: 13px; color: var(--ink-2); margin: 10px 0 3px; }
+  dialog input, dialog select {
+    width: 100%; background: var(--page); color: var(--ink); border: 1px solid var(--border);
+    border-radius: 8px; padding: 8px 10px; font: inherit;
+  }
+  .dialog-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px; }
+
+  footer { margin-top: 18px; color: var(--muted); font-size: 13px; }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="header-row">
+      <div>
+        <h1>Blake's Job Tracker</h1>
+        <p>Data · Cloud · AI · Consulting — Houston, Austin &amp; Dallas · Fortune 500, PwC &amp; startups</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn primary" id="addBtn">+ Add job</button>
+        <button class="btn" id="exportCsv">Export CSV</button>
+        <button class="btn" id="exportJson">Backup JSON</button>
+        <button class="btn" id="importJson">Restore</button>
+        <input type="file" id="importFile" accept=".json" hidden>
+        <button class="btn" id="themeBtn" title="Toggle light/dark">◐</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="tiles" id="tiles"></div>
+
+  <div class="filters">
+    <input type="search" id="q" placeholder="Search company, role, notes…">
+    <select id="fCity">
+      <option value="">All cities</option>
+      <option>Houston</option><option>Austin</option><option>Dallas</option><option>Remote</option>
+    </select>
+    <select id="fCat">
+      <option value="">All categories</option>
+      <option>Consulting</option><option>Fortune 500</option><option>Startup</option><option>Other</option>
+    </select>
+    <select id="fStatus">
+      <option value="">All statuses</option>
+    </select>
+  </div>
+
+  <div class="table-card">
+    <table>
+      <thead><tr id="headRow"></tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+    <div class="empty" id="empty" hidden>No jobs match — clear filters or add one.</div>
+  </div>
+
+  <footer>
+    Job postings move fast — always click through to <strong>verify the role is still open on the company site</strong> before applying.
+    Data is saved in this browser (localStorage). Use <em>Backup JSON</em> to move it between devices.
+  </footer>
+</div>
+
+<dialog id="dlg">
+  <h2>Add a job</h2>
+  <form id="addForm" method="dialog">
+    <label>Company *</label><input name="company" required>
+    <label>Role / title</label><input name="role" placeholder="e.g. Data Engineer Intern">
+    <label>Location</label><input name="location" placeholder="e.g. Houston, TX">
+    <label>Category</label>
+    <select name="category"><option>Fortune 500</option><option>Consulting</option><option>Startup</option><option>Other</option></select>
+    <label>Job / careers URL</label><input name="url" type="url" placeholder="https://…">
+    <label>Notes</label><input name="notes">
+    <div class="dialog-actions">
+      <button class="btn" value="cancel" formnovalidate>Cancel</button>
+      <button class="btn primary" value="ok">Add</button>
+    </div>
+  </form>
+</dialog>
+
+<script>
+/* ====================== seed data ====================== */
+/* Injected from research on 2026-07-14. Each entry gets a stable id so your
+   edits/deletes persist across updates to this file. */
+const SEED = [];
+/* ==================== end seed data ==================== */
+
+const STATUSES = ["Not Applied","Saved","Applied","Interviewing","Offer","Rejected","Closed"];
+const ST_KEY = {
+  "Not Applied":"notapplied","Saved":"saved","Applied":"applied",
+  "Interviewing":"interview","Offer":"offer","Rejected":"rejected","Closed":"closed"
+};
+const LS = "blake-job-tracker-v1";
+
+function load() {
+  let data;
+  try { data = JSON.parse(localStorage.getItem(LS)) || {}; } catch { data = {}; }
+  const jobs = data.jobs || [];
+  const deleted = new Set(data.deleted || []);
+  const have = new Set(jobs.map(j => j.id));
+  for (const s of SEED) {
+    if (!have.has(s.id) && !deleted.has(s.id)) {
+      jobs.push({ status: "Not Applied", dateApplied: "", ...s });
+    }
+  }
+  return { jobs, deleted };
+}
+function save() {
+  localStorage.setItem(LS, JSON.stringify({ jobs: state.jobs, deleted: [...state.deleted] }));
+}
+const state = load();
+save();
+
+/* ---------- filters & sorting ---------- */
+const ui = { q: "", city: "", cat: "", status: "", tile: "", sortKey: "company", sortDir: 1 };
+
+const COLS = [
+  { key: "company",  label: "Company / Role" },
+  { key: "location", label: "Location" },
+  { key: "category", label: "Category" },
+  { key: "status",   label: "Status" },
+  { key: "dateApplied", label: "Applied on" },
+  { key: "notes",    label: "Notes" },
+  { key: "_link",    label: "Link", sortable: false },
+  { key: "_del",     label: "", sortable: false },
+];
+
+function visibleJobs() {
+  const q = ui.q.toLowerCase();
+  let list = state.jobs.filter(j => {
+    if (q && !`${j.company} ${j.role} ${j.notes} ${j.location}`.toLowerCase().includes(q)) return false;
+    if (ui.city && !(j.location || "").toLowerCase().includes(ui.city.toLowerCase())) return false;
+    if (ui.cat && j.category !== ui.cat) return false;
+    if (ui.status && j.status !== ui.status) return false;
+    if (ui.tile && j.status !== ui.tile) return false;
+    return true;
+  });
+  const k = ui.sortKey;
+  list.sort((a, b) => {
+    if (k === "status") return (STATUSES.indexOf(a.status) - STATUSES.indexOf(b.status)) * ui.sortDir;
+    return String(a[k] || "").localeCompare(String(b[k] || "")) * ui.sortDir;
+  });
+  return list;
+}
+
+/* ---------- render ---------- */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+
+function renderTiles() {
+  const counts = Object.fromEntries(STATUSES.map(s => [s, 0]));
+  state.jobs.forEach(j => counts[j.status] = (counts[j.status] || 0) + 1);
+  const tiles = [["", "Total", state.jobs.length]].concat(
+    ["Not Applied","Applied","Interviewing","Offer"].map(s => [s, s, counts[s] || 0])
+  );
+  $("#tiles").innerHTML = tiles.map(([key, lbl, n]) => `
+    <button class="tile ${ui.tile === key && key !== "" || (key === "" && ui.tile === "") ? (ui.tile === key ? "active" : "") : ""}" data-tile="${esc(key)}">
+      <div class="num">${n}</div>
+      <div class="lbl">${key ? `<span class="dot" style="background:var(--st-${ST_KEY[key]}-fg)"></span>` : ""}${esc(lbl)}</div>
+    </button>`).join("");
+  document.querySelectorAll(".tile").forEach(t => t.onclick = () => {
+    ui.tile = (ui.tile === t.dataset.tile) ? "" : t.dataset.tile;
+    render();
+  });
+}
+
+function renderHead() {
+  $("#headRow").innerHTML = COLS.map(c => {
+    const arrow = ui.sortKey === c.key ? `<span class="arrow">${ui.sortDir > 0 ? "▲" : "▼"}</span>` : "";
+    return `<th data-key="${c.key}" ${c.sortable === false ? 'style="cursor:default"' : ""}>${c.label} ${arrow}</th>`;
+  }).join("");
+  document.querySelectorAll("th").forEach(th => th.onclick = () => {
+    const col = COLS.find(c => c.key === th.dataset.key);
+    if (!col || col.sortable === false) return;
+    if (ui.sortKey === col.key) ui.sortDir *= -1; else { ui.sortKey = col.key; ui.sortDir = 1; }
+    render();
+  });
+}
+
+function renderRows() {
+  const list = visibleJobs();
+  $("#empty").hidden = list.length > 0;
+  $("#rows").innerHTML = list.map(j => {
+    const sk = ST_KEY[j.status] || "notapplied";
+    return `<tr data-id="${esc(j.id)}">
+      <td><div class="company">${esc(j.company)}</div><div class="role">${esc(j.role || "")}</div></td>
+      <td>${esc(j.location || "")}</td>
+      <td><span class="badge" style="background:var(--st-notapplied-bg);color:var(--ink-2)">${esc(j.category || "")}</span></td>
+      <td><select class="status" style="background:var(--st-${sk}-bg);color:var(--st-${sk}-fg)">
+        ${STATUSES.map(s => `<option ${s === j.status ? "selected" : ""}>${s}</option>`).join("")}
+      </select></td>
+      <td><input class="date" type="date" value="${esc(j.dateApplied || "")}"></td>
+      <td><input class="notes" value="${esc(j.notes || "")}" placeholder="notes…"></td>
+      <td>${j.url ? `<a href="${esc(j.url)}" target="_blank" rel="noopener">Apply ↗</a>` : ""}
+          ${j.careersUrl && j.careersUrl !== j.url ? `<br><a href="${esc(j.careersUrl)}" target="_blank" rel="noopener" style="font-size:12.5px;color:var(--muted)">careers ↗</a>` : ""}</td>
+      <td><button class="del" title="Remove">✕</button></td>
+    </tr>`;
+  }).join("");
+
+  document.querySelectorAll("#rows tr").forEach(tr => {
+    const job = state.jobs.find(j => j.id === tr.dataset.id);
+    tr.querySelector(".status").onchange = e => {
+      job.status = e.target.value;
+      if (job.status === "Applied" && !job.dateApplied) job.dateApplied = new Date().toISOString().slice(0, 10);
+      save(); render();
+    };
+    tr.querySelector(".date").onchange = e => { job.dateApplied = e.target.value; save(); renderTiles(); };
+    tr.querySelector(".notes").onchange = e => { job.notes = e.target.value; save(); };
+    tr.querySelector(".del").onclick = () => {
+      if (!confirm(`Remove ${job.company}${job.role ? " — " + job.role : ""}?`)) return;
+      state.deleted.add(job.id);
+      state.jobs = state.jobs.filter(j => j.id !== job.id);
+      save(); render();
+    };
+  });
+}
+
+function render() { renderTiles(); renderHead(); renderRows(); }
+
+/* ---------- filter inputs ---------- */
+$("#q").oninput = e => { ui.q = e.target.value; renderRows(); };
+$("#fCity").onchange = e => { ui.city = e.target.value; renderRows(); };
+$("#fCat").onchange = e => { ui.cat = e.target.value; renderRows(); };
+const fs = $("#fStatus");
+STATUSES.forEach(s => fs.append(new Option(s)));
+fs.onchange = e => { ui.status = e.target.value; renderRows(); };
+
+/* ---------- add dialog ---------- */
+$("#addBtn").onclick = () => $("#dlg").showModal();
+$("#addForm").onsubmit = e => {
+  if (e.submitter && e.submitter.value === "cancel") return;
+  const f = new FormData(e.target);
+  state.jobs.push({
+    id: "u-" + Date.now().toString(36),
+    company: f.get("company"), role: f.get("role"), location: f.get("location"),
+    category: f.get("category"), url: f.get("url"), careersUrl: f.get("url"),
+    notes: f.get("notes"), status: "Not Applied", dateApplied: "",
+  });
+  e.target.reset(); save(); render();
+};
+
+/* ---------- export / import ---------- */
+function download(name, text, type) {
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([text], { type }));
+  a.download = name; a.click(); URL.revokeObjectURL(a.href);
+}
+$("#exportCsv").onclick = () => {
+  const cols = ["company","role","location","category","status","dateApplied","url","notes"];
+  const csv = [cols.join(",")].concat(state.jobs.map(j =>
+    cols.map(c => `"${String(j[c] ?? "").replace(/"/g, '""')}"`).join(",")
+  )).join("\n");
+  download("job-tracker.csv", csv, "text/csv");
+};
+$("#exportJson").onclick = () =>
+  download("job-tracker-backup.json", JSON.stringify({ jobs: state.jobs, deleted: [...state.deleted] }, null, 2), "application/json");
+$("#importJson").onclick = () => $("#importFile").click();
+$("#importFile").onchange = e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  file.text().then(t => {
+    const data = JSON.parse(t);
+    if (!Array.isArray(data.jobs)) throw new Error("bad file");
+    state.jobs = data.jobs;
+    state.deleted = new Set(data.deleted || []);
+    save(); render();
+  }).catch(() => alert("Couldn't read that backup file."));
+  e.target.value = "";
+};
+
+/* ---------- theme toggle ---------- */
+$("#themeBtn").onclick = () => {
+  const cur = document.documentElement.dataset.theme ||
+    (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  document.documentElement.dataset.theme = cur === "dark" ? "light" : "dark";
+  localStorage.setItem(LS + "-theme", document.documentElement.dataset.theme);
+};
+const savedTheme = localStorage.getItem(LS + "-theme");
+if (savedTheme) document.documentElement.dataset.theme = savedTheme;
+
+render();
+</script>
