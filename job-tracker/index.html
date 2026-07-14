@@ -1,0 +1,586 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b0b0f" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#fafafa" media="(prefers-color-scheme: light)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Job Tracker">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<title>Blake's Job Tracker</title>
+<style>
+  :root {
+    color-scheme: light;
+    --page:        #fafafa;
+    --surface:     #ffffff;
+    --surface-2:   #f4f4f5;
+    --ink:         #18181b;
+    --ink-2:       #52525b;
+    --muted:       #8e8e98;
+    --hairline:    #ececef;
+    --border:      rgba(24,24,27,0.08);
+    --accent:      #6366f1;
+    --accent-2:    #8b5cf6;
+    --accent-ink:  #ffffff;
+    --glow:        rgba(99,102,241,0.10);
+    --shadow:      0 1px 2px rgba(24,24,27,.04), 0 8px 24px -12px rgba(24,24,27,.12);
+    --st-notapplied-bg: #f4f4f5; --st-notapplied-fg: #52525b;
+    --st-saved-bg:      #e0e7ff; --st-saved-fg:      #3730a3;
+    --st-applied-bg:    #dcfce7; --st-applied-fg:    #166534;
+    --st-interview-bg:  #fef3c7; --st-interview-fg:  #854d0e;
+    --st-offer-bg:      #d1fae5; --st-offer-fg:      #065f46;
+    --st-rejected-bg:   #fee2e2; --st-rejected-fg:   #991b1b;
+    --st-closed-bg:     #f4f4f5; --st-closed-fg:     #8e8e98;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --page:        #0b0b0f;
+      --surface:     #131318;
+      --surface-2:   #1a1a21;
+      --ink:         #f4f4f5;
+      --ink-2:       #a1a1aa;
+      --muted:       #70707a;
+      --hairline:    #1f1f26;
+      --border:      rgba(255,255,255,0.08);
+      --accent:      #818cf8;
+      --accent-2:    #a78bfa;
+      --accent-ink:  #ffffff;
+      --glow:        rgba(129,140,248,0.13);
+      --shadow:      0 1px 2px rgba(0,0,0,.3), 0 12px 32px -16px rgba(0,0,0,.5);
+      --st-notapplied-bg: #26262e; --st-notapplied-fg: #a1a1aa;
+      --st-saved-bg:      #1e2247; --st-saved-fg:      #a5b4fc;
+      --st-applied-bg:    #10301f; --st-applied-fg:    #6ee7a0;
+      --st-interview-bg:  #38290b; --st-interview-fg:  #fbd06d;
+      --st-offer-bg:      #0d3327; --st-offer-fg:      #5eead4;
+      --st-rejected-bg:   #3d1518; --st-rejected-fg:   #fda4af;
+      --st-closed-bg:     #1f1f26; --st-closed-fg:     #70707a;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --page:        #0b0b0f;
+    --surface:     #131318;
+    --surface-2:   #1a1a21;
+    --ink:         #f4f4f5;
+    --ink-2:       #a1a1aa;
+    --muted:       #70707a;
+    --hairline:    #1f1f26;
+    --border:      rgba(255,255,255,0.08);
+    --accent:      #818cf8;
+    --accent-2:    #a78bfa;
+    --accent-ink:  #ffffff;
+    --glow:        rgba(129,140,248,0.13);
+    --shadow:      0 1px 2px rgba(0,0,0,.3), 0 12px 32px -16px rgba(0,0,0,.5);
+    --st-notapplied-bg: #26262e; --st-notapplied-fg: #a1a1aa;
+    --st-saved-bg:      #1e2247; --st-saved-fg:      #a5b4fc;
+    --st-applied-bg:    #10301f; --st-applied-fg:    #6ee7a0;
+    --st-interview-bg:  #38290b; --st-interview-fg:  #fbd06d;
+    --st-offer-bg:      #0d3327; --st-offer-fg:      #5eead4;
+    --st-rejected-bg:   #3d1518; --st-rejected-fg:   #fda4af;
+    --st-closed-bg:     #1f1f26; --st-closed-fg:     #70707a;
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background:
+      radial-gradient(1100px 480px at 50% -120px, var(--glow), transparent 65%),
+      var(--page);
+    color: var(--ink);
+    font: 15px/1.55 ui-sans-serif, -apple-system, "SF Pro Text", Inter, "Segoe UI", system-ui, sans-serif;
+    font-feature-settings: "cv05", "cv11";
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 28px 20px 90px; }
+
+  header h1 {
+    font-size: 27px; margin: 0 0 3px; letter-spacing: -0.03em; font-weight: 700;
+    background: linear-gradient(92deg, var(--ink) 30%, var(--accent) 85%, var(--accent-2));
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    width: fit-content;
+  }
+  header p  { margin: 0; color: var(--ink-2); font-size: 13.5px; letter-spacing: -0.005em; }
+  .header-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; }
+  .header-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(128px, 1fr)); gap: 10px; margin: 22px 0 18px; }
+  .tile {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+    padding: 14px 15px 12px; cursor: pointer; text-align: left; font: inherit; color: inherit;
+    box-shadow: var(--shadow);
+    transition: border-color .15s ease, transform .15s ease, box-shadow .15s ease;
+  }
+  .tile:hover { border-color: var(--accent); transform: translateY(-1px); }
+  .tile:active { transform: translateY(0); }
+  .tile .num { font-size: 27px; font-weight: 700; line-height: 1.05; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+  .tile .lbl { color: var(--ink-2); font-size: 12.5px; margin-top: 4px; display: flex; align-items: center; gap: 6px; }
+  .tile .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .tile.active {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--glow), var(--shadow);
+  }
+
+  .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; align-items: center; }
+  .filters input[type="search"], .filters select {
+    background: var(--surface); color: var(--ink); border: 1px solid var(--border);
+    border-radius: 10px; padding: 8px 12px; font: inherit; font-size: 14px;
+    transition: border-color .15s ease, box-shadow .15s ease;
+    -webkit-appearance: none; appearance: none;
+  }
+  .filters select {
+    padding-right: 28px;
+    background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%), linear-gradient(135deg, var(--muted) 50%, transparent 50%);
+    background-position: calc(100% - 15px) 55%, calc(100% - 10px) 55%;
+    background-size: 5px 5px; background-repeat: no-repeat;
+  }
+  .filters input[type="search"] { flex: 1 1 220px; min-width: 180px; }
+  .filters input[type="search"]:focus, .filters select:focus {
+    outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--glow);
+  }
+
+  button.btn {
+    background: var(--surface); color: var(--ink); border: 1px solid var(--border);
+    border-radius: 10px; padding: 8px 14px; font: inherit; font-size: 14px; font-weight: 500;
+    cursor: pointer; transition: border-color .15s ease, background .15s ease, transform .1s ease;
+  }
+  button.btn:hover { border-color: var(--accent); }
+  button.btn:active { transform: scale(.98); }
+  button.btn.primary {
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    color: var(--accent-ink); border-color: transparent; font-weight: 600;
+    box-shadow: 0 4px 14px -4px var(--accent);
+  }
+  button.btn.primary:hover { filter: brightness(1.08); }
+
+  .table-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+    overflow-x: auto; box-shadow: var(--shadow);
+  }
+  table { border-collapse: collapse; width: 100%; min-width: 1080px; }
+  td:nth-child(6) { min-width: 240px; }
+  th {
+    text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .07em;
+    color: var(--muted); font-weight: 600; padding: 12px 14px; border-bottom: 1px solid var(--hairline);
+    cursor: pointer; user-select: none; white-space: nowrap;
+    position: sticky; top: 0; background: var(--surface); z-index: 1;
+  }
+  th .arrow { font-size: 9px; color: var(--accent); }
+  td { padding: 11px 14px; border-bottom: 1px solid var(--hairline); vertical-align: top; }
+  tbody tr { transition: background .12s ease; }
+  tbody tr:hover { background: var(--surface-2); }
+  tr:last-child td { border-bottom: none; }
+  td .company { font-weight: 600; letter-spacing: -0.01em; }
+  td .role { color: var(--ink-2); font-size: 13px; margin-top: 1px; }
+  a { color: var(--accent); text-decoration: none; font-weight: 500; }
+  a:hover { text-decoration: underline; }
+
+  .badge {
+    display: inline-block; font-size: 11.5px; font-weight: 600; border-radius: 999px;
+    padding: 3px 10px; white-space: nowrap; letter-spacing: .01em;
+    border: 1px solid var(--border);
+  }
+  select.status {
+    font: inherit; font-size: 12.5px; font-weight: 600; border-radius: 999px;
+    padding: 4px 10px; border: 1px solid transparent; cursor: pointer;
+    -webkit-appearance: none; appearance: none;
+    transition: filter .15s ease;
+  }
+  select.status:hover { filter: brightness(1.05); }
+  input.date, input.notes {
+    background: transparent; color: var(--ink); border: 1px solid transparent;
+    border-radius: 8px; padding: 4px 7px; font: inherit; font-size: 13.5px; width: 100%;
+    transition: border-color .15s ease, background .15s ease;
+  }
+  input.date { width: 132px; color-scheme: inherit; }
+  input.date:hover, input.notes:hover { border-color: var(--border); }
+  input.date:focus, input.notes:focus { border-color: var(--accent); outline: none; background: var(--surface-2); }
+  .del { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 14px; padding: 3px 7px; border-radius: 8px; transition: all .15s ease; }
+  .del:hover { color: var(--st-rejected-fg); background: var(--st-rejected-bg); }
+
+  .empty { padding: 40px; text-align: center; color: var(--muted); }
+
+  dialog {
+    background: var(--surface); color: var(--ink); border: 1px solid var(--border);
+    border-radius: 18px; padding: 24px; max-width: 460px; width: calc(100vw - 40px);
+    box-shadow: 0 24px 64px -16px rgba(0,0,0,.4);
+  }
+  dialog::backdrop { background: rgba(8,8,12,.55); backdrop-filter: blur(4px); }
+  dialog h2 { margin: 0 0 14px; font-size: 18px; letter-spacing: -0.02em; }
+  dialog label { display: block; font-size: 12.5px; color: var(--ink-2); margin: 11px 0 4px; font-weight: 500; }
+  dialog input, dialog select {
+    width: 100%; background: var(--surface-2); color: var(--ink); border: 1px solid var(--border);
+    border-radius: 10px; padding: 9px 11px; font: inherit; font-size: 14px;
+  }
+  dialog input:focus, dialog select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--glow); }
+  .dialog-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px; }
+
+  footer { margin-top: 20px; color: var(--muted); font-size: 12.5px; }
+  footer strong { color: var(--ink-2); }
+
+  /* ---------- phone layout: table rows become cards ---------- */
+  @media (max-width: 720px) {
+    .wrap { padding: 20px 14px 70px; }
+    .header-actions { width: 100%; }
+    .tiles { grid-template-columns: repeat(auto-fit, minmax(104px, 1fr)); gap: 8px; }
+    .tile { padding: 11px 12px 9px; border-radius: 12px; }
+    .tile .num { font-size: 22px; }
+
+    .table-card { background: transparent; border: none; box-shadow: none; overflow: visible; }
+    table, tbody { display: block; min-width: 0; }
+    thead { display: none; }
+    tbody tr {
+      display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;
+      background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+      padding: 14px; margin-bottom: 10px; box-shadow: var(--shadow);
+    }
+    td { display: block; padding: 0; border: none; min-width: 0 !important; }
+    td:nth-child(1) { flex: 1 1 100%; }           /* company/role */
+    td:nth-child(2) { color: var(--ink-2); font-size: 13px; }  /* location */
+    td:nth-child(3) { }                            /* category */
+    td:nth-child(4) { flex-basis: auto; }          /* status */
+    td:nth-child(5) input.date { width: 128px; background: var(--surface-2); border-color: var(--border); }
+    td:nth-child(6) { flex: 1 1 100%; }            /* notes */
+    td:nth-child(6) input.notes { background: var(--surface-2); border-color: var(--border); padding: 7px 10px; }
+    td:nth-child(7) { margin-right: auto; }        /* links */
+    td:nth-child(7) br { display: none; }
+    td:nth-child(7) a[style] { margin-left: 10px; }
+    td:nth-child(8) { }                            /* delete */
+  }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="header-row">
+      <div>
+        <h1>Blake's Job Tracker</h1>
+        <p>Data · Cloud · AI · Consulting — Houston, Austin &amp; Dallas · Fortune 500, PwC &amp; startups</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn primary" id="addBtn">+ Add job</button>
+        <button class="btn" id="exportCsv">Export CSV</button>
+        <button class="btn" id="exportJson">Backup JSON</button>
+        <button class="btn" id="importJson">Restore</button>
+        <input type="file" id="importFile" accept=".json" hidden>
+        <button class="btn" id="themeBtn" title="Toggle light/dark">◐</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="tiles" id="tiles"></div>
+
+  <div class="filters">
+    <input type="search" id="q" placeholder="Search company, role, notes…">
+    <select id="fCity">
+      <option value="">All cities</option>
+      <option>Houston</option><option>Austin</option><option>Dallas</option><option>Remote</option>
+    </select>
+    <select id="fCat">
+      <option value="">All categories</option>
+      <option>Consulting</option><option>Fortune 500</option><option>Startup</option><option>Other</option>
+    </select>
+    <select id="fStatus">
+      <option value="">All statuses</option>
+    </select>
+  </div>
+
+  <div class="table-card">
+    <table>
+      <thead><tr id="headRow"></tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+    <div class="empty" id="empty" hidden>No jobs match — clear filters or add one.</div>
+  </div>
+
+  <footer>
+    Job postings move fast — always click through to <strong>verify the role is still open on the company site</strong> before applying.
+    Data is saved in this browser (localStorage). Use <em>Backup JSON</em> to move it between devices.
+  </footer>
+</div>
+
+<dialog id="dlg">
+  <h2>Add a job</h2>
+  <form id="addForm" method="dialog">
+    <label>Company *</label><input name="company" required>
+    <label>Role / title</label><input name="role" placeholder="e.g. Data Engineer Intern">
+    <label>Location</label><input name="location" placeholder="e.g. Houston, TX">
+    <label>Category</label>
+    <select name="category"><option>Fortune 500</option><option>Consulting</option><option>Startup</option><option>Other</option></select>
+    <label>Job / careers URL</label><input name="url" type="url" placeholder="https://…">
+    <label>Notes</label><input name="notes">
+    <div class="dialog-actions">
+      <button class="btn" value="cancel" formnovalidate>Cancel</button>
+      <button class="btn primary" value="ok">Add</button>
+    </div>
+  </form>
+</dialog>
+
+<script>
+/* ====================== seed data ====================== */
+/* Injected from research on 2026-07-14. Each entry gets a stable id so your
+   edits/deletes persist across updates to this file. */
+const SEED = [
+  /* ---- Consulting (PwC first) ---- */
+  { id:"pwc-1", company:"PwC", category:"Consulting", role:"Data Engineer — Senior Associate", location:"Dallas / Houston / Austin, TX (+US)", url:"https://jobs.us.pwc.com/job/atlanta/data-engineer-senior-associate/932/91375324064", careersUrl:"https://jobs.us.pwc.com/location/texas-jobs/932/6252001-4736286/3", notes:"Req 91375324064 · verified 7/14/26 · Sr Associate asks ~2 yrs — stretch; entry path = PwC Launch/Associate (see watch row)" },
+  { id:"pwc-2", company:"PwC", category:"Consulting", role:"AI & GenAI Data Scientist — Senior Associate", location:"Dallas / Houston / Austin, TX (+US)", url:"https://jobs.us.pwc.com/job/new-york/ai-and-genai-data-scientist-senior-associate/932/96040447440", careersUrl:"https://jobs.us.pwc.com/employment/dallas-texas-united-states-data-and-analytics-jobs/932/8362480/6252001-4736286-4684904-4684888/4", notes:"Req 96040447440 · verified 7/14/26 · Sr Associate asks ~2 yrs — stretch; entry path = PwC Launch/Associate (see watch row)" },
+  { id:"pwc-3", company:"PwC", category:"Consulting", role:"US Tech — AI Engineering Senior Associate", location:"Dallas / Houston / Austin, TX (+US)", url:"https://jobs.us.pwc.com/job/tampa/us-tech-ai-engineering-senior-associate/932/90906499280", careersUrl:"https://jobs.us.pwc.com/employment/houston-texas-united-states-data-and-analytics-engineering-jobs/932/8857792/6252001-4736286-4696376-4699066/4", notes:"Req 90906499280 · verified 7/14/26 · Sr Associate asks ~2 yrs — stretch; entry path = PwC Launch/Associate (see watch row)" },
+  { id:"pwc-4", company:"PwC", category:"Consulting", role:"Texas data & analytics jobs (watch weekly)", location:"Austin / Dallas / Houston, TX", url:"https://jobs.us.pwc.com/employment/austin-texas-united-states-data-and-analytics-engineering-jobs/932/8857792/6252001-4736286-4737316-4671654/4", careersUrl:"https://jobs.us.pwc.com/location/texas-jobs/932/6252001-4736286/3", notes:"Entry-level Associate/intern (Launch) roles post here seasonally" },
+  { id:"deloitte-1", company:"Deloitte", category:"Consulting", role:"AI Data Engineer — Consultant", location:"Austin / Dallas / Houston, TX", url:"https://apply.deloitte.com/en_US/careers/JobDetail/AI-Data-Engineer-Consultant/327489", careersUrl:"https://apply.deloitte.com/en_US/careers/SearchJobs", notes:"Req 327489 · open until 8/30/26 · near-exact match for AI data eng background" },
+  { id:"deloitte-2", company:"Deloitte", category:"Consulting", role:"AI & Data Consultant", location:"Austin / Dallas / Houston, TX", url:"https://apply.deloitte.com/en_US/careers/JobDetail/AI-Data-Consultant/340368", careersUrl:"https://apply.deloitte.com/en_US/careers/SearchJobs", notes:"Req 340368 · Consultant = early-career level" },
+  { id:"deloitte-3", company:"Deloitte", category:"Consulting", role:"AI & Data Engineering Analyst", location:"Austin / Dallas / Houston, TX", url:"https://apply.deloitte.com/careers/JobDetail/Deloitte-Consulting-Artificial-Intelligence-Data-Engineering-Analyst/195145", careersUrl:"https://jobsus.deloitte.com/data-engineer/jobs-in/usa/jobs/", notes:"Req 195145 · Analyst = new-grad entry level; confirm still accepting" },
+  { id:"ey-1", company:"EY", category:"Consulting", role:"Tech Consulting — AI & Data (early careers)", location:"Dallas / Houston / Austin, TX", url:"https://ey.jobs/texas/usa/jobs/", careersUrl:"https://careers.ey.com/", notes:"Entry-level Staff roles route via EY Students & Early Careers" },
+  { id:"kpmg-1", company:"KPMG", category:"Consulting", role:"Associate, Data Engineer", location:"Dallas / Houston, TX (hybrid)", url:"https://www.kpmguscareers.com/jobdetail/?jobId=131998-A", careersUrl:"https://www.kpmguscareers.com/job-search/", notes:"Req 131998-A · ~1 yr exp fits · no visa sponsorship" },
+  { id:"accenture-1", company:"Accenture", category:"Consulting", role:"Tech Development Program — AI Analyst (NAELFY26)", location:"Houston / Austin / Irving, TX (+US)", url:"https://www.accenture.com/us-en/careers/jobdetails?id=R00326732_en", careersUrl:"https://www.accenture.com/us-en/careers/life-at-accenture/entry-level", notes:"Req R00326732 · FY26 entry-level AI/data rotational cohort" },
+  { id:"accenture-2", company:"Accenture", category:"Consulting", role:"Data Engineer — Reinvention Centers", location:"Dallas, TX (hybrid)", url:"https://www.accenture.com/us-en/careers/jobdetails?id=R00334158_en", careersUrl:"https://www.accenture.com/us-en/careers", notes:"Req R00334158 · asks 2 yrs Azure — stretch role" },
+  { id:"ibm-1", company:"IBM", category:"Consulting", role:"Entry Level Software Developer Austin: 2026", location:"Austin, TX", url:"https://careers.ibm.com/en_US/careers/JobDetail/Entry-Level-Software-Developer-Austin-2026/73771", careersUrl:"https://www.ibm.com/careers", notes:"Req 73771 · also Data Engineer (Austin) & Assoc. Data Scientist (Dallas/Houston) reqs" },
+  { id:"capgemini-1", company:"Capgemini", category:"Consulting", role:"Data / GenAI engineering roles", location:"Houston / Dallas / Austin, TX", url:"https://www.capgemini.com/us-en/careers/join-capgemini/job-search/", careersUrl:"https://www.capgemini.com/us-en/careers/join-capgemini/job-search/", notes:"Search 'data engineer' + Texas — AWS Glue/Lambda & GenAI roles seen in Houston" },
+  { id:"slalom-1", company:"Slalom", category:"Consulting", role:"Data & Analytics Consultant", location:"Houston / Dallas / Austin, TX", url:"https://jobs.slalom.com/en_US/careersmarketplace", careersUrl:"https://jobs.slalom.com/en_US/careersmarketplace", notes:"Filter by market + Data & Analytics capability" },
+  { id:"mckinsey-1", company:"McKinsey & Company", category:"Consulting", role:"Data Engineering (entry: Data Engineer I / BA)", location:"Dallas / Houston / Austin, TX", url:"https://www.mckinsey.com/careers/tech-and-ai/internal-roles/data-science-and-data-engineering", careersUrl:"https://www.mckinsey.com/careers/search-jobs", notes:"Filter search-jobs to TX offices" },
+  { id:"bcg-1", company:"Boston Consulting Group", category:"Consulting", role:"Data Science & Analytics", location:"Dallas / Houston / Austin, TX", url:"https://careers.bcg.com/global/en/c/data-science-and-analytics-jobs", careersUrl:"https://careers.bcg.com/", notes:"Entry level = Associate / BCG X Data Scientist tracks" },
+  { id:"bain-1", company:"Bain & Company", category:"Consulting", role:"Analytics / Consultant tracks", location:"Austin / Dallas / Houston, TX", url:"https://www.bain.com/careers/work-with-us/our-work-areas/analytics-data-research/", careersUrl:"https://www.bain.com/careers/", notes:"Fall 2026 hiring across all 3 TX offices reported; apps due ~8/9/26 — confirm" },
+
+  /* ---- Fortune 500 ---- */
+  { id:"ti-1", company:"Texas Instruments", category:"Fortune 500", role:"Career Accelerator Program — Data Engineer", location:"Dallas, TX", url:"https://careers.ti.com/en/sites/CX/job/25007813", careersUrl:"https://careers.ti.com/en/sites/CX/jobs?location=Dallas%2C+TX%2C+United+States&locationId=300000056282337&locationLevel=city&mode=location&radius=25&radiusUnit=MI", notes:"Req 25007813 · explicit new-grad program, AI/ML data infra — top match" },
+  { id:"hpe-1", company:"Hewlett Packard Enterprise", category:"Fortune 500", role:"Data Science Graduate", location:"Spring, TX (Houston)", url:"https://careers.hpe.com/us/en/job/1192963/Data-Science-Graduate", careersUrl:"https://careers.hpe.com/us/en/search-results?keywords=data%20engineer", notes:"Job 1192963 · graduate/early-career · also AI & Data Jr Consultant (1196418)" },
+  { id:"gs-1", company:"Goldman Sachs", category:"Fortune 500", role:"Data Engineering — Lakehouse & AI Data Platform — Analyst", location:"Dallas, TX", url:"https://higher.gs.com/roles/169312", careersUrl:"https://higher.gs.com/roles?LOCATION=Dallas", notes:"Role 169312 · Analyst = entry level · Python/Java + SQL" },
+  { id:"google-1", company:"Google", category:"Fortune 500", role:"Data Engineer", location:"Austin, TX", url:"https://www.google.com/about/careers/applications/jobs/results/92372690618196678-data-engineer/", careersUrl:"https://www.google.com/about/careers/applications/jobs/results?location=Austin%2C+TX%2C+USA&q=data+engineer", notes:"Bachelor's + 1 yr · $123.9k–151k · hybrid Austin · verified 7/14/26" },
+  { id:"tesla-1", company:"Tesla", category:"Fortune 500", role:"Data Analyst, New Product Introduction (Model Y)", location:"Austin, TX", url:"https://www.tesla.com/careers/search/job/data-analyst-new-product-introduction-model-y-austin-tx-196696", careersUrl:"https://www.tesla.com/careers/search/?query=data&country=US&state=TX&location=Austin", notes:"Req 196696 · entry-friendly · Data Engineer req 94691 also indexed" },
+  { id:"apple-1", company:"Apple", category:"Fortune 500", role:"Data Engineer", location:"Austin, TX", url:"https://jobs.apple.com/en-us/details/200588140/data-engineer", careersUrl:"https://jobs.apple.com/en-us/search?location=austin-AST", notes:"Role 200588140, Operations · multiple Big Data Engineer roles also open" },
+  { id:"amazon-1", company:"Amazon", category:"Fortune 500", role:"Data Engineer Internship — Fall 2026", location:"Austin, TX", url:"https://www.amazon.jobs/en/jobs/10399655/", careersUrl:"https://www.amazon.jobs/en/search?base_query=data+engineer&loc_query=Austin%2C+TX", notes:"Job 10399655 · fall internship = start before graduation · FT Data Engineer roles ask 5+ yrs" },
+  { id:"oracle-1", company:"Oracle", category:"Fortune 500", role:"Undergrad Cloud Engineer — Full-time Intern Conversion", location:"Austin, TX", url:"https://careers.oracle.com/en/sites/jobsearch/jobs?keyword=data+engineer&location=Austin%2C+TX%2C+United+States", careersUrl:"https://careers.oracle.com/en/sites/jobsearch/jobs?keyword=data+engineer&location=Austin%2C+TX%2C+United+States", notes:"Req 305127 (intern conversion) & Cloud Engineer req 293366 — search portal for Austin" },
+  { id:"microsoft-1", company:"Microsoft", category:"Fortune 500", role:"Data / cloud engineering roles", location:"Irving / Austin, TX", url:"https://jobs.careers.microsoft.com/global/en/search?q=data%20engineer&lc=Texas%2C%20United%20States", careersUrl:"https://jobs.careers.microsoft.com/global/en/search?q=data%20engineer&lc=Texas%2C%20United%20States", notes:"Data Engineer job 1793497 & Azure Advanced Cloud Engineer 1772144 in TX index" },
+  { id:"dell-1", company:"Dell Technologies", category:"Fortune 500", role:"Data Science & Analytics (watch for early-career)", location:"Round Rock, TX (Austin)", url:"https://jobs.dell.com/en/employment/round-rock-data-science-and-analytics-jobs/375-30225/77091/6252001-4736286-4742143-4724129/4", careersUrl:"https://jobs.dell.com/en/employment/round-rock-data-science-and-analytics-jobs/375-30225/77091/6252001-4736286-4742143-4724129/4", notes:"Sr Data Scientist live now; entry-level reqs post on this category page" },
+  { id:"att-1", company:"AT&T", category:"Fortune 500", role:"Data & Analytics (Dallas category page)", location:"Dallas, TX", url:"https://www.att.jobs/employment/dallas-texas-united-states-data-and-analytics-jobs/117/61758/6252001-4736286-4684904-4684888/4", careersUrl:"https://www.att.jobs/employment/dallas-texas-united-states-data-and-analytics-jobs/117/61758/6252001-4736286-4684904-4684888/4", notes:"Principal Data/AI Eng posted 7/1/26 (senior); earlier-career reqs list here" },
+  { id:"capitalone-1", company:"Capital One", category:"Fortune 500", role:"Data Engineer (Sr. Associate)", location:"Plano, TX", url:"https://www.capitalonecareers.com/job/plano/data-engineer/1732/81829565584", careersUrl:"https://www.capitalonecareers.com/employment/plano-texas-united-states-technology-jobs/234/4412/6252001-4736286-4682500-4719457/4", notes:"Sr. Associate = early-career band · verified 7/14/26" },
+  { id:"jpmc-1", company:"JPMorgan Chase", category:"Fortune 500", role:"Data Engineer (Associate / II / III)", location:"Plano, TX", url:"https://jpmchase.dejobs.org/locations/plano-tx/jobs/", careersUrl:"https://jpmchase.dejobs.org/locations/plano-tx/jobs/", notes:"e.g. Data Engineer II — Python/Spark/AWS (req 210687838); filter Plano" },
+  { id:"schwab-1", company:"Charles Schwab", category:"Fortune 500", role:"Data Engineer", location:"Westlake, TX (DFW)", url:"https://www.schwabjobs.com/job/westlake/data-engineer/33727/76332592544", careersUrl:"https://www.schwabjobs.com/employment/westlake-texas-united-states-engineering-and-software-development-jobs/27326/8421664/6252001-4736286-4741196/4", notes:"Also Software Developer req 96250887904 ($33–48/hr, data-pipeline) — good entry fit" },
+  { id:"usaa-1", company:"USAA", category:"Fortune 500", role:"Data Engineer — Intermediate Level", location:"Plano, TX (or San Antonio)", url:"https://www.usaajobs.com/job/san-antonio/data-engineer-intermediate-level/1207/67667291840", careersUrl:"https://www.usaajobs.com/location/plano-jobs/1207/6252001-4736286-4682500-4719457/4", notes:"Stretch: asks 2 yrs exp · Snowflake/dbt/Python/Kafka · San Antonio option = near UTSA" },
+  { id:"aa-1", company:"American Airlines", category:"Fortune 500", role:"Sr Associate Engineer, IT Data", location:"Fort Worth, TX (DFW)", url:"https://jobs.aa.com/job/Sr-Associate-Engineer,-IT-Data/83540-en_US/", careersUrl:"https://jobs.aa.com/go/Data-Analyst-Jobs-in-Fort-Worth/2599700/", notes:"Req 83540 · Associate = early-career · reqs 83948/85873 also open" },
+  { id:"swa-1", company:"Southwest Airlines", category:"Fortune 500", role:"Technology jobs (watch for Data Engineer repost)", location:"Dallas, TX", url:"https://careers.southwestair.com/us/en/c/technology-jobs", careersUrl:"https://careers.southwestair.com/us/en/c/technology-jobs", notes:"Data Engineer R-2026-64160 recently closed — join talent community, watch reposts" },
+  { id:"exxon-1", company:"ExxonMobil", category:"Fortune 500", role:"Data Analyst", location:"Houston, TX", url:"https://jobs.exxonmobil.com/ExxonMobil/job/Houston-Data-Analyst-TX-77001/1344256000/", careersUrl:"https://jobs.exxonmobil.com/go/View-all-openings/3012100/", notes:"Blends data engineering + BI · Data Scientist & ML Engineer reqs also open" },
+  { id:"chevron-1", company:"Chevron", category:"Fortune 500", role:"Machine Learning Engineer, Data & Insights", location:"Houston, TX", url:"https://careers.chevron.com/job/houston/machine-learning-engineer-data-and-insights-surface-and-hse/38138/95850722576", careersUrl:"https://careers.chevron.com/location/houston-jobs/35016/6252001-4736286-4699066/4", notes:"Verified 7/14/26 · check Houston page for new Data Engineer reqs" },
+  { id:"p66-1", company:"Phillips 66", category:"Fortune 500", role:"Data engineering (Houston jobs page)", location:"Houston, TX", url:"https://phillips66.jobs/houston/texas/usa/jobs/", careersUrl:"https://phillips66.jobs/houston/texas/usa/jobs/", notes:"Sr. Data Engineer (Azure/Databricks) live now; IT/data reqs post here" },
+  { id:"sysco-1", company:"Sysco", category:"Fortune 500", role:"Data Scientist / Data Engineer Intern", location:"Houston, TX", url:"https://careers.sysco.com/en/job/houston/data-scientist/1105/89422661760", careersUrl:"https://careers.sysco.com/en/employment/houston-texas-united-states-technology-jobs/1105/8750096/6252001-4736286-4696376-4699066/4", notes:"Data Engineer Intern req 85658756896 also on Houston tech page" },
+  { id:"mckesson-1", company:"McKesson", category:"Fortune 500", role:"Data Engineer (Multiple Positions)", location:"Irving, TX (DFW)", url:"https://careers.mckesson.com/en/job/irving/data-engineer-multiple-positions/733/84347327184", careersUrl:"https://careers.mckesson.com/en/category/data-engineering-jobs/733/8734416/1", notes:"Job JR0133999 · multiple openings · verified 7/14/26" },
+
+  /* ---- Startups ---- */
+  { id:"apptronik-1", company:"Apptronik", category:"Startup", role:"SWE Intern — ML Ops / Data Platform Engineer", location:"Austin, TX", url:"https://job-boards.greenhouse.io/apptronik/jobs/5993905004", careersUrl:"https://apptronik.com/careers", notes:"Humanoid robotics unicorn · intern req 5993905004; Data Platform Eng req 5978948004 (3 yrs)" },
+  { id:"jasper-1", company:"Jasper AI", category:"Startup", role:"Data Analyst", location:"Austin, TX (remote-first)", url:"https://jobs.ashbyhq.com/Jasper%20AI/b15bdb8f-5d0f-47fe-a2f5-1d76e019a62d", careersUrl:"https://www.jasper.ai/careers", notes:"AI marketing platform · Data Engineer also on Ashby board · verified 7/14/26" },
+  { id:"fervo-1", company:"Fervo Energy", category:"Startup", role:"Data Engineer", location:"Houston, TX", url:"https://recruiting.paylocity.com/recruiting/jobs/All/12776fae-4a6e-4875-99e9-78e5a8621042/Fervo-Energy-Company", careersUrl:"https://fervoenergy.com/careers/", notes:"Geothermal unicorn, ~42 openings · Agentic AI Engineer also on Data & AI team" },
+  { id:"axiom-1", company:"Axiom Space", category:"Startup", role:"Enterprise Data Analyst — Power BI", location:"Houston, TX", url:"https://axiomspace.wd5.myworkdayjobs.com/External_Career_Site/job/Houston/Data-Analyst--Power-BI-Focus-_JR100480", careersUrl:"https://www.axiomspace.com/careers", notes:"JR100480 · SQL/Python · ~$86–120K · US citizenship/PR required" },
+  { id:"avathon-1", company:"Avathon (ex-SparkCognition)", category:"Startup", role:"Data Scientist (0–3 yrs)", location:"Austin, TX", url:"https://avathon.com/company/careers/", careersUrl:"https://avathon.com/company/careers/", notes:"Industrial AI · entry-level DS on-site Austin · verified 7/14/26" },
+  { id:"bestow-1", company:"Bestow", category:"Startup", role:"Data Analyst", location:"Dallas, TX (remote ok)", url:"https://jobs.ashbyhq.com/bestow", careersUrl:"https://www.bestow.com/careers", notes:"Insurtech · $95–110K · SQL/dbt/GCP/Tableau — matches your GCP experience" },
+  { id:"highradius-1", company:"HighRadius", category:"Startup", role:"Data / AI roles (16 Houston openings)", location:"Houston, TX", url:"https://www.highradius.com/about/career/", careersUrl:"https://www.highradius.com/about/career/", notes:"AI fintech unicorn, Houston HQ · Data Scientist & Forward Deployed Engineer seen" },
+  { id:"o9-1", company:"o9 Solutions", category:"Startup", role:"Data / cloud roles (~15 Dallas openings)", location:"Dallas, TX", url:"https://o9solutions.com/careers", careersUrl:"https://o9solutions.com/careers", notes:"AI supply-chain decacorn, Dallas HQ · DevOps Eng II & Assoc Solution Architect open" },
+  { id:"alertmedia-1", company:"AlertMedia", category:"Startup", role:"Software Engineer", location:"Austin, TX", url:"https://www.alertmedia.com/careers/openings/", careersUrl:"https://www.alertmedia.com/careers/", notes:"Emergency comms SaaS · ~9 Austin openings, 5 in engineering" },
+  { id:"arrive-1", company:"Arrive Logistics", category:"Startup", role:"Data science / analytics (check board)", location:"Austin, TX", url:"https://www.arrivelogistics.com/careers/openings/", careersUrl:"https://jobs.lever.co/arrivelogistics", notes:"Freight-tech, $2B+ revenue · Data Scientist II & DS Intern post regularly on Lever" },
+  { id:"self-1", company:"Self Financial", category:"Startup", role:"Data engineering (check openings)", location:"Austin, TX", url:"https://www.self.inc/careers", careersUrl:"https://www.self.inc/careers", notes:"Fintech (credit building) · active data engineering team" },
+  { id:"eventus-1", company:"Eventus", category:"Startup", role:"Engineering (check openings)", location:"Austin, TX", url:"https://www.eventus.com/careers/", careersUrl:"https://www.eventus.com/careers/", notes:"Trade surveillance platform · expanding after Feb 2026 investment" },
+  { id:"icon-1", company:"ICON", category:"Startup", role:"Software / data roles (Greenhouse board)", location:"Austin, TX", url:"https://job-boards.greenhouse.io/iconcareers", careersUrl:"https://www.iconbuild.com/careers", notes:"3D-printed construction robotics · BuildOS platform & simulation roles active" },
+  { id:"closinglock-1", company:"Closinglock", category:"Startup", role:"Software engineering (watch for data roles)", location:"Austin, TX", url:"https://ats.rippling.com/closinglock/jobs", careersUrl:"https://ats.rippling.com/closinglock/jobs", notes:"Real-estate fraud-prevention fintech · no dedicated data roles today" },
+  { id:"helloalice-1", company:"Hello Alice", category:"Startup", role:"Openings fluctuate (watch board)", location:"Houston, TX (remote-first)", url:"https://apply.workable.com/hello-alice/", careersUrl:"https://helloalice.com/about/careers/", notes:"Small-business fintech · no data role confirmed today" },
+];
+/* ==================== end seed data ==================== */
+
+const STATUSES = ["Not Applied","Saved","Applied","Interviewing","Offer","Rejected","Closed"];
+const ST_KEY = {
+  "Not Applied":"notapplied","Saved":"saved","Applied":"applied",
+  "Interviewing":"interview","Offer":"offer","Rejected":"rejected","Closed":"closed"
+};
+const LS = "blake-job-tracker-v1";
+
+function load() {
+  let data;
+  try { data = JSON.parse(localStorage.getItem(LS)) || {}; } catch { data = {}; }
+  const jobs = data.jobs || [];
+  const deleted = new Set(data.deleted || []);
+  const have = new Set(jobs.map(j => j.id));
+  for (const s of SEED) {
+    if (!have.has(s.id) && !deleted.has(s.id)) {
+      jobs.push({ status: "Not Applied", dateApplied: "", ...s });
+    }
+  }
+  return { jobs, deleted };
+}
+function save() {
+  localStorage.setItem(LS, JSON.stringify({ jobs: state.jobs, deleted: [...state.deleted] }));
+}
+const state = load();
+save();
+
+/* ---------- filters & sorting ---------- */
+const ui = { q: "", city: "", cat: "", status: "", tile: "", sortKey: "company", sortDir: 1 };
+
+const COLS = [
+  { key: "company",  label: "Company / Role" },
+  { key: "location", label: "Location" },
+  { key: "category", label: "Category" },
+  { key: "status",   label: "Status" },
+  { key: "dateApplied", label: "Applied on" },
+  { key: "notes",    label: "Notes" },
+  { key: "_link",    label: "Link", sortable: false },
+  { key: "_del",     label: "", sortable: false },
+];
+
+function visibleJobs() {
+  const q = ui.q.toLowerCase();
+  let list = state.jobs.filter(j => {
+    if (q && !`${j.company} ${j.role} ${j.notes} ${j.location}`.toLowerCase().includes(q)) return false;
+    if (ui.city && !(j.location || "").toLowerCase().includes(ui.city.toLowerCase())) return false;
+    if (ui.cat && j.category !== ui.cat) return false;
+    if (ui.status && j.status !== ui.status) return false;
+    if (ui.tile && j.status !== ui.tile) return false;
+    return true;
+  });
+  const k = ui.sortKey;
+  list.sort((a, b) => {
+    if (k === "status") return (STATUSES.indexOf(a.status) - STATUSES.indexOf(b.status)) * ui.sortDir;
+    return String(a[k] || "").localeCompare(String(b[k] || "")) * ui.sortDir;
+  });
+  return list;
+}
+
+/* ---------- render ---------- */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+
+function renderTiles() {
+  const counts = Object.fromEntries(STATUSES.map(s => [s, 0]));
+  state.jobs.forEach(j => counts[j.status] = (counts[j.status] || 0) + 1);
+  const tiles = [["", "Total", state.jobs.length]].concat(
+    ["Not Applied","Applied","Interviewing","Offer"].map(s => [s, s, counts[s] || 0])
+  );
+  $("#tiles").innerHTML = tiles.map(([key, lbl, n]) => `
+    <button class="tile ${ui.tile === key && key !== "" || (key === "" && ui.tile === "") ? (ui.tile === key ? "active" : "") : ""}" data-tile="${esc(key)}">
+      <div class="num">${n}</div>
+      <div class="lbl">${key ? `<span class="dot" style="background:var(--st-${ST_KEY[key]}-fg)"></span>` : ""}${esc(lbl)}</div>
+    </button>`).join("");
+  document.querySelectorAll(".tile").forEach(t => t.onclick = () => {
+    ui.tile = (ui.tile === t.dataset.tile) ? "" : t.dataset.tile;
+    render();
+  });
+}
+
+function renderHead() {
+  $("#headRow").innerHTML = COLS.map(c => {
+    const arrow = ui.sortKey === c.key ? `<span class="arrow">${ui.sortDir > 0 ? "▲" : "▼"}</span>` : "";
+    return `<th data-key="${c.key}" ${c.sortable === false ? 'style="cursor:default"' : ""}>${c.label} ${arrow}</th>`;
+  }).join("");
+  document.querySelectorAll("th").forEach(th => th.onclick = () => {
+    const col = COLS.find(c => c.key === th.dataset.key);
+    if (!col || col.sortable === false) return;
+    if (ui.sortKey === col.key) ui.sortDir *= -1; else { ui.sortKey = col.key; ui.sortDir = 1; }
+    render();
+  });
+}
+
+function renderRows() {
+  const list = visibleJobs();
+  $("#empty").hidden = list.length > 0;
+  $("#rows").innerHTML = list.map(j => {
+    const sk = ST_KEY[j.status] || "notapplied";
+    return `<tr data-id="${esc(j.id)}">
+      <td><div class="company">${esc(j.company)}</div><div class="role">${esc(j.role || "")}</div></td>
+      <td>${esc(j.location || "")}</td>
+      <td><span class="badge" style="background:var(--st-notapplied-bg);color:var(--ink-2)">${esc(j.category || "")}</span></td>
+      <td><select class="status" style="background:var(--st-${sk}-bg);color:var(--st-${sk}-fg)">
+        ${STATUSES.map(s => `<option ${s === j.status ? "selected" : ""}>${s}</option>`).join("")}
+      </select></td>
+      <td><input class="date" type="date" value="${esc(j.dateApplied || "")}"></td>
+      <td><input class="notes" value="${esc(j.notes || "")}" placeholder="notes…"></td>
+      <td>${j.url ? `<a href="${esc(j.url)}" target="_blank" rel="noopener">Apply ↗</a>` : ""}
+          ${j.careersUrl && j.careersUrl !== j.url ? `<br><a href="${esc(j.careersUrl)}" target="_blank" rel="noopener" style="font-size:12.5px;color:var(--muted)">careers ↗</a>` : ""}</td>
+      <td><button class="del" title="Remove">✕</button></td>
+    </tr>`;
+  }).join("");
+
+  document.querySelectorAll("#rows tr").forEach(tr => {
+    const job = state.jobs.find(j => j.id === tr.dataset.id);
+    tr.querySelector(".status").onchange = e => {
+      job.status = e.target.value;
+      if (job.status === "Applied" && !job.dateApplied) job.dateApplied = new Date().toISOString().slice(0, 10);
+      save(); render();
+    };
+    tr.querySelector(".date").onchange = e => { job.dateApplied = e.target.value; save(); renderTiles(); };
+    tr.querySelector(".notes").onchange = e => { job.notes = e.target.value; save(); };
+    tr.querySelector(".del").onclick = () => {
+      if (!confirm(`Remove ${job.company}${job.role ? " — " + job.role : ""}?`)) return;
+      state.deleted.add(job.id);
+      state.jobs = state.jobs.filter(j => j.id !== job.id);
+      save(); render();
+    };
+  });
+}
+
+function render() { renderTiles(); renderHead(); renderRows(); }
+
+/* ---------- filter inputs ---------- */
+$("#q").oninput = e => { ui.q = e.target.value; renderRows(); };
+$("#fCity").onchange = e => { ui.city = e.target.value; renderRows(); };
+$("#fCat").onchange = e => { ui.cat = e.target.value; renderRows(); };
+const fs = $("#fStatus");
+STATUSES.forEach(s => fs.append(new Option(s)));
+fs.onchange = e => { ui.status = e.target.value; renderRows(); };
+
+/* ---------- add dialog ---------- */
+$("#addBtn").onclick = () => $("#dlg").showModal();
+$("#addForm").onsubmit = e => {
+  if (e.submitter && e.submitter.value === "cancel") return;
+  const f = new FormData(e.target);
+  state.jobs.push({
+    id: "u-" + Date.now().toString(36),
+    company: f.get("company"), role: f.get("role"), location: f.get("location"),
+    category: f.get("category"), url: f.get("url"), careersUrl: f.get("url"),
+    notes: f.get("notes"), status: "Not Applied", dateApplied: "",
+  });
+  e.target.reset(); save(); render();
+};
+
+/* ---------- export / import ---------- */
+function download(name, text, type) {
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([text], { type }));
+  a.download = name; a.click(); URL.revokeObjectURL(a.href);
+}
+$("#exportCsv").onclick = () => {
+  const cols = ["company","role","location","category","status","dateApplied","url","notes"];
+  const csv = [cols.join(",")].concat(state.jobs.map(j =>
+    cols.map(c => `"${String(j[c] ?? "").replace(/"/g, '""')}"`).join(",")
+  )).join("\n");
+  download("job-tracker.csv", csv, "text/csv");
+};
+$("#exportJson").onclick = () =>
+  download("job-tracker-backup.json", JSON.stringify({ jobs: state.jobs, deleted: [...state.deleted] }, null, 2), "application/json");
+$("#importJson").onclick = () => $("#importFile").click();
+$("#importFile").onchange = e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  file.text().then(t => {
+    const data = JSON.parse(t);
+    if (!Array.isArray(data.jobs)) throw new Error("bad file");
+    state.jobs = data.jobs;
+    state.deleted = new Set(data.deleted || []);
+    save(); render();
+  }).catch(() => alert("Couldn't read that backup file."));
+  e.target.value = "";
+};
+
+/* ---------- theme toggle ---------- */
+$("#themeBtn").onclick = () => {
+  const cur = document.documentElement.dataset.theme ||
+    (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  document.documentElement.dataset.theme = cur === "dark" ? "light" : "dark";
+  localStorage.setItem(LS + "-theme", document.documentElement.dataset.theme);
+};
+const savedTheme = localStorage.getItem(LS + "-theme");
+if (savedTheme) document.documentElement.dataset.theme = savedTheme;
+
+render();
+
+/* ---------- PWA: offline support when served over https (e.g. GitHub Pages) ---------- */
+if ("serviceWorker" in navigator && location.protocol === "https:") {
+  navigator.serviceWorker.register("./sw.js").catch(() => {});
+}
+</script>
