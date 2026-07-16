@@ -88,10 +88,10 @@ final class JobStore: ObservableObject {
     // MARK: - Export
 
     var csv: String {
-        let header = "company,role,location,category,status,dateApplied,url,notes"
+        let header = "company,role,location,category,opens,closes,starts,status,dateApplied,url,notes"
         let df = ISO8601DateFormatter()
         let rows = jobs.map { j in
-            [j.company, j.role, j.location, j.category, j.status.rawValue,
+            [j.company, j.role, j.location, j.category, j.opens, j.closes, j.starts, j.status.rawValue,
              j.dateApplied.map { df.string(from: $0) } ?? "", j.url, j.notes]
                 .map { "\"\($0.replacingOccurrences(of: "\"", with: "\"\""))\"" }
                 .joined(separator: ",")

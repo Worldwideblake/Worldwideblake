@@ -45,6 +45,9 @@ struct Job: Identifiable, Codable, Equatable {
     var url: String
     var careersUrl: String
     var notes: String
+    var opens: String
+    var closes: String
+    var starts: String
     var status: JobStatus
     var dateApplied: Date?
 
@@ -59,11 +62,13 @@ struct Job: Identifiable, Codable, Equatable {
 
     // Seed entries carry no status/date; decode with sensible defaults.
     enum CodingKeys: String, CodingKey {
-        case id, company, category, role, location, url, careersUrl, notes, status, dateApplied
+        case id, company, category, role, location, url, careersUrl, notes,
+             opens, closes, starts, status, dateApplied
     }
 
     init(id: String, company: String, category: String, role: String, location: String,
          url: String, careersUrl: String, notes: String,
+         opens: String = "", closes: String = "", starts: String = "",
          status: JobStatus = .notApplied, dateApplied: Date? = nil) {
         self.id = id
         self.company = company
@@ -73,6 +78,9 @@ struct Job: Identifiable, Codable, Equatable {
         self.url = url
         self.careersUrl = careersUrl
         self.notes = notes
+        self.opens = opens
+        self.closes = closes
+        self.starts = starts
         self.status = status
         self.dateApplied = dateApplied
     }
@@ -87,6 +95,9 @@ struct Job: Identifiable, Codable, Equatable {
         url = try c.decodeIfPresent(String.self, forKey: .url) ?? ""
         careersUrl = try c.decodeIfPresent(String.self, forKey: .careersUrl) ?? ""
         notes = try c.decodeIfPresent(String.self, forKey: .notes) ?? ""
+        opens = try c.decodeIfPresent(String.self, forKey: .opens) ?? ""
+        closes = try c.decodeIfPresent(String.self, forKey: .closes) ?? ""
+        starts = try c.decodeIfPresent(String.self, forKey: .starts) ?? ""
         status = try c.decodeIfPresent(JobStatus.self, forKey: .status) ?? .notApplied
         dateApplied = try c.decodeIfPresent(Date.self, forKey: .dateApplied)
     }

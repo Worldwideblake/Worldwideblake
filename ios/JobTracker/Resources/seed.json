@@ -41,6 +41,8 @@
   },
   {
     "id": "deloitte-1",
+    "closes": "2026-08-30",
+    "starts": "ASAP / rolling",
     "company": "Deloitte",
     "category": "Consulting",
     "role": "AI Data Engineer — Consultant",
@@ -91,6 +93,7 @@
   },
   {
     "id": "accenture-1",
+    "starts": "FY26 cohort (2026)",
     "company": "Accenture",
     "category": "Consulting",
     "role": "Tech Development Program — AI Analyst (NAELFY26)",
@@ -111,6 +114,7 @@
   },
   {
     "id": "ibm-1",
+    "starts": "2026 cohort",
     "company": "IBM",
     "category": "Consulting",
     "role": "Entry Level Software Developer Austin: 2026",
@@ -161,6 +165,8 @@
   },
   {
     "id": "bain-1",
+    "closes": "2026-08-09",
+    "starts": "Fall 2026 cohort (confirm on bain.com)",
     "company": "Bain & Company",
     "category": "Consulting",
     "role": "Analytics / Consultant tracks",
@@ -171,6 +177,7 @@
   },
   {
     "id": "ti-1",
+    "starts": "New-grad program",
     "company": "Texas Instruments",
     "category": "Fortune 500",
     "role": "Career Accelerator Program — Data Engineer",
@@ -181,6 +188,7 @@
   },
   {
     "id": "hpe-1",
+    "starts": "New grad",
     "company": "Hewlett Packard Enterprise",
     "category": "Fortune 500",
     "role": "Data Science Graduate",
@@ -231,6 +239,7 @@
   },
   {
     "id": "amazon-1",
+    "starts": "Fall 2026 (internship)",
     "company": "Amazon",
     "category": "Fortune 500",
     "role": "Data Engineer Internship — Fall 2026",
@@ -241,6 +250,7 @@
   },
   {
     "id": "oracle-1",
+    "starts": "Intern → FT conversion",
     "company": "Oracle",
     "category": "Fortune 500",
     "role": "Undergrad Cloud Engineer — Full-time Intern Conversion",
@@ -371,6 +381,7 @@
   },
   {
     "id": "sysco-1",
+    "starts": "Internship option (req 85658756896)",
     "company": "Sysco",
     "category": "Fortune 500",
     "role": "Data Scientist / Data Engineer Intern",
@@ -391,6 +402,7 @@
   },
   {
     "id": "apptronik-1",
+    "starts": "Internship",
     "company": "Apptronik",
     "category": "Startup",
     "role": "SWE Intern — ML Ops / Data Platform Engineer",
