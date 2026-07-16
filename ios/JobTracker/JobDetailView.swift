@@ -12,6 +12,13 @@ struct JobDetailView: View {
                 if !job.role.isEmpty { LabeledContent("Role", value: job.role) }
                 if !job.location.isEmpty { LabeledContent("Location", value: job.location) }
                 LabeledContent("Category", value: job.category)
+                LabeledContent("Apply window", value: {
+                    if !job.opens.isEmpty && !job.closes.isEmpty { return "\(job.opens) → \(job.closes)" }
+                    if !job.closes.isEmpty { return "by \(job.closes)" }
+                    if !job.opens.isEmpty { return "opens \(job.opens)" }
+                    return "Rolling"
+                }())
+                if !job.starts.isEmpty { LabeledContent("Starts", value: job.starts) }
             }
 
             Section("Application") {
