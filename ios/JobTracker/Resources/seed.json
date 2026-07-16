@@ -1,35 +1,5 @@
 [
   {
-    "id": "pwc-1",
-    "company": "PwC",
-    "category": "Consulting",
-    "role": "Data Engineer — Senior Associate",
-    "location": "Dallas / Houston / Austin, TX (+US)",
-    "url": "https://jobs.us.pwc.com/job/atlanta/data-engineer-senior-associate/932/91375324064",
-    "careersUrl": "https://jobs.us.pwc.com/location/texas-jobs/932/6252001-4736286/3",
-    "notes": "Req 91375324064 · verified 7/14/26 · Sr Associate asks ~2 yrs — stretch; entry path = PwC Launch/Associate (see watch row)"
-  },
-  {
-    "id": "pwc-2",
-    "company": "PwC",
-    "category": "Consulting",
-    "role": "AI & GenAI Data Scientist — Senior Associate",
-    "location": "Dallas / Houston / Austin, TX (+US)",
-    "url": "https://jobs.us.pwc.com/job/new-york/ai-and-genai-data-scientist-senior-associate/932/96040447440",
-    "careersUrl": "https://jobs.us.pwc.com/employment/dallas-texas-united-states-data-and-analytics-jobs/932/8362480/6252001-4736286-4684904-4684888/4",
-    "notes": "Req 96040447440 · verified 7/14/26 · Sr Associate asks ~2 yrs — stretch; entry path = PwC Launch/Associate (see watch row)"
-  },
-  {
-    "id": "pwc-3",
-    "company": "PwC",
-    "category": "Consulting",
-    "role": "US Tech — AI Engineering Senior Associate",
-    "location": "Dallas / Houston / Austin, TX (+US)",
-    "url": "https://jobs.us.pwc.com/job/tampa/us-tech-ai-engineering-senior-associate/932/90906499280",
-    "careersUrl": "https://jobs.us.pwc.com/employment/houston-texas-united-states-data-and-analytics-engineering-jobs/932/8857792/6252001-4736286-4696376-4699066/4",
-    "notes": "Req 90906499280 · verified 7/14/26 · Sr Associate asks ~2 yrs — stretch; entry path = PwC Launch/Associate (see watch row)"
-  },
-  {
     "id": "pwc-4",
     "company": "PwC",
     "category": "Consulting",
@@ -37,7 +7,7 @@
     "location": "Austin / Dallas / Houston, TX",
     "url": "https://jobs.us.pwc.com/employment/austin-texas-united-states-data-and-analytics-engineering-jobs/932/8857792/6252001-4736286-4737316-4671654/4",
     "careersUrl": "https://jobs.us.pwc.com/location/texas-jobs/932/6252001-4736286/3",
-    "notes": "Entry-level Associate/intern (Launch) roles post here seasonally"
+    "notes": "PwC entry path: Launch internships & Associate roles post here — check weekly (Senior Associate reqs removed: above rank)"
   },
   {
     "id": "deloitte-1",
@@ -101,16 +71,6 @@
     "url": "https://www.accenture.com/us-en/careers/jobdetails?id=R00326732_en",
     "careersUrl": "https://www.accenture.com/us-en/careers/life-at-accenture/entry-level",
     "notes": "Req R00326732 · FY26 entry-level AI/data rotational cohort"
-  },
-  {
-    "id": "accenture-2",
-    "company": "Accenture",
-    "category": "Consulting",
-    "role": "Data Engineer — Reinvention Centers",
-    "location": "Dallas, TX (hybrid)",
-    "url": "https://www.accenture.com/us-en/careers/jobdetails?id=R00334158_en",
-    "careersUrl": "https://www.accenture.com/us-en/careers",
-    "notes": "Req R00334158 · asks 2 yrs Azure — stretch role"
   },
   {
     "id": "ibm-1",
@@ -215,7 +175,7 @@
     "location": "Austin, TX",
     "url": "https://www.google.com/about/careers/applications/jobs/results/92372690618196678-data-engineer/",
     "careersUrl": "https://www.google.com/about/careers/applications/jobs/results?location=Austin%2C+TX%2C+USA&q=data+engineer",
-    "notes": "Bachelor's + 1 yr · $123.9k–151k · hybrid Austin · verified 7/14/26"
+    "notes": "Asks BS + 1 yr & immediate start — apply near/after graduation; watch for Google university/new-grad reqs · verified 7/14/26"
   },
   {
     "id": "tesla-1",
@@ -318,16 +278,6 @@
     "url": "https://www.schwabjobs.com/job/westlake/data-engineer/33727/76332592544",
     "careersUrl": "https://www.schwabjobs.com/employment/westlake-texas-united-states-engineering-and-software-development-jobs/27326/8421664/6252001-4736286-4741196/4",
     "notes": "Also Software Developer req 96250887904 ($33–48/hr, data-pipeline) — good entry fit"
-  },
-  {
-    "id": "usaa-1",
-    "company": "USAA",
-    "category": "Fortune 500",
-    "role": "Data Engineer — Intermediate Level",
-    "location": "Plano, TX (or San Antonio)",
-    "url": "https://www.usaajobs.com/job/san-antonio/data-engineer-intermediate-level/1207/67667291840",
-    "careersUrl": "https://www.usaajobs.com/location/plano-jobs/1207/6252001-4736286-4682500-4719457/4",
-    "notes": "Stretch: asks 2 yrs exp · Snowflake/dbt/Python/Kafka · San Antonio option = near UTSA"
   },
   {
     "id": "aa-1",

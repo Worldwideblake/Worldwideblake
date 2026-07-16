@@ -1,5 +1,5 @@
 /* Simple offline cache for the job tracker PWA. Bump VERSION on each deploy. */
-const VERSION = "v4";
+const VERSION = "v5";
 const CACHE = `job-tracker-${VERSION}`;
 const ASSETS = ["./", "./index.html", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png", "./icon-180.png"];
 
